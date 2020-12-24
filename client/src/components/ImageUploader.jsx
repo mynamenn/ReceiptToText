@@ -27,16 +27,7 @@ export default function ImageUploader() {
             })
                 .then(function (response) {
                     console.log(response);
-                    let texts = response.data.split("\n")
-                    let arr = ["SHOP NAME: " + texts[0]];
-
-                    texts.forEach(text => {
-                        let processedText = processText(text);
-                        if (processedText !== "") {
-                            arr.push(processedText);
-                        }
-                    });
-                    setTexts(texts);
+                    processTexts(response.data.split("\n"));
                 })
                 .catch(function (response) {
                     console.log(response);
@@ -53,16 +44,20 @@ export default function ImageUploader() {
         reader.readAsDataURL(imageFile);
     }
 
-    const processText = (text) => {
-        if (text.slice(0, 6).toLowerCase() === "total:") {
-            let string = text.slice(7).trim();
-            return ("TOTAL: " + string);
-        }
-        else if (text.slice(0, 5).toLowerCase() === "total") {
-            let string = text.slice(6).trim();
-            return ("TOTAL: " + string);
-        }
-        return "";
+    const processTexts = (texts) => {
+        let arr = ["SHOP NAME: " + texts[0]];
+
+        texts.forEach(text => {
+            if (text.slice(0, 6).toLowerCase() === "total:") {
+                let string = text.slice(7).trim();
+                arr.push("TOTAL: " + string);
+            }
+            else if (text.slice(0, 5).toLowerCase() === "total") {
+                let string = text.slice(6).trim();
+                arr.push("TOTAL: " + string);
+            }
+        });
+        setTexts(texts);
     }
 
     return (
